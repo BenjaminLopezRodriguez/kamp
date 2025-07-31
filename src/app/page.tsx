@@ -41,6 +41,12 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-6 md:px-12 py-28 grid md:grid-cols-2 gap-12 items-center">
         <div className="text-left">
+          <img
+            src="/logo.png"
+            alt="logo"
+            width={64}
+            height={34}
+          />
           <h1 className="font-heading text-5xl md:text-7xl font-extrabold text-purple-900 leading-tight tracking-tight">
             Manage Properties <br /> Smarter, Friendlier, Faster
           </h1>
