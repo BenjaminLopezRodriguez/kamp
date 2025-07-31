@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import { type Metadata } from "next";
-import { Geist, Rubik } from "next/font/google";
+import { Geist } from "next/font/google";
+import { Merriweather } from "next/font/google"; // Import a serif font
 import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata: Metadata = {
@@ -17,10 +18,10 @@ const geist = Geist({
   display: "swap",
 });
 
-const rubik = Rubik({
+const merriweather = Merriweather({
   subsets: ["latin"],
-  variable: "--font-rubik",
-  weight: ["400", "500", "600", "700"],
+  variable: "--font-merriweather",
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -28,7 +29,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${rubik.variable}`}>
+    <html lang="en" className={`${geist.variable} ${merriweather.variable}`}>
       <body className="font-sans bg-purple-50 text-stone-900 antialiased">
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
