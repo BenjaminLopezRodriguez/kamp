@@ -30,7 +30,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable} ${merriweather.variable}`}>
-      <body className="font-sans bg-purple-50 text-stone-900 antialiased">
+      <body className="bg-purple-50 font-sans text-stone-900 antialiased">
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
