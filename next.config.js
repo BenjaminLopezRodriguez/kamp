@@ -15,5 +15,10 @@ const config = {
   images: {
     domains: ["picsum.photos"],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "8mb",
+    },
+  },
 };
 export default config;

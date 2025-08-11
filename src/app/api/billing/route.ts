@@ -19,16 +19,16 @@ export async function GET() {
           Authorization: `Bearer ${accessToken}`,
         },
         cache: "no-store",
-      }
+      },
     );
-    const data = await res.json();
+    const data:any = await res.json();
 
     return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching entitlements:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
