@@ -1,11 +1,10 @@
-import { Button } from "@/components/ui/button"
-import Layout from "./layout"
+import { Button } from "@/components/ui/button";
+import Layout from "./layout";
 
-export default function Home(){
-    return(
-        <div>
-            <Button> Sign IN</Button>
-
-        </div>
-    )
+export default function Home() {
+  return (
+    <div>
+      <Button> Sign IN</Button>
+    </div>
+  );
 }
