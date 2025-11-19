@@ -5,12 +5,18 @@ import { MoveUpRight, Home, Users, Wrench, DollarSign, MessageSquare, Shield, Za
 import HelpBox from "./_components/HelpBox";
 import MinimalCard from "@/components/custom/minimalcard";
 import { useRouter } from "next/navigation";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { useEffect, useState } from "react";
 
 const RentalPlatform = () => {
   const router = useRouter();
-  const { isAuthenticated } = useKindeAuth();
+  const { isAuthenticated } = useKindeBrowserClient();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <section className="text-foreground pt-32 pb-20">
@@ -33,7 +39,7 @@ const RentalPlatform = () => {
               title: "I'm Renting", 
               desc: "Find your perfect home and manage your lease easily", 
               onClick: () => {
-                if (isAuthenticated) {
+                if (mounted && isAuthenticated) {
                   router.push("/properties");
                 } else {
                   router.push("/api/auth/login");
@@ -44,7 +50,7 @@ const RentalPlatform = () => {
               title: "I'm Leasing", 
               desc: "Manage properties, tenants, and payments all in one place",
               onClick: () => {
-                if (isAuthenticated) {
+                if (mounted && isAuthenticated) {
                   router.push("/u/dashboard");
                 } else {
                   router.push("/api/auth/login");
@@ -64,7 +70,7 @@ const RentalPlatform = () => {
           ))}
         </div>
 
-        {!isAuthenticated && (
+        {mounted && !isAuthenticated && (
           <div className="flex gap-4 justify-center">
             <Button asChild className="bg-white text-blue-600 hover:bg-white/90">
               <RegisterLink>Get Started Free</RegisterLink>

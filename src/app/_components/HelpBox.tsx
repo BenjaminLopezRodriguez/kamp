@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,11 @@ import {
 export default function HelpBox() {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSend = () => {
     if (message.trim()) {
@@ -23,6 +28,8 @@ export default function HelpBox() {
       // Here you'll send to GPT API, then set chat state
     }
   };
+
+  if (!mounted) return null;
 
   return (
     <>
