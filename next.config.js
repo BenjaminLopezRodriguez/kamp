@@ -20,5 +20,17 @@ const config = {
       bodySizeLimit: "8mb",
     },
   },
+  // Optimize build performance
+  swcMinify: true,
+  // Reduce memory usage during build
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
 };
 export default config;
