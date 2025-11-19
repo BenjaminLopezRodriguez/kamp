@@ -1,11 +1,17 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { MoveUpRight } from "lucide-react";
+import { MoveUpRight, Home, Users, Wrench, DollarSign, MessageSquare, Shield, Zap } from "lucide-react";
 import HelpBox from "./_components/HelpBox";
 import MinimalCard from "@/components/custom/minimalcard";
+import { useRouter } from "next/navigation";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 const RentalPlatform = () => {
+  const router = useRouter();
+  const { isAuthenticated } = useKindeAuth();
+
   return (
     <section className="text-foreground pt-32 pb-20">
       <div className="container mx-auto px-4 text-center">
@@ -13,7 +19,7 @@ const RentalPlatform = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-4 text-3xl font-bold md:text-5xl"
+          className="mb-4 text-3xl font-bold md:text-5xl text-white"
         >
           Making renting stress-free
         </motion.h1>
@@ -21,18 +27,29 @@ const RentalPlatform = () => {
           Tools and services for tenants and landlords — all in one place.
         </p>
 
-        <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2 mb-12">
           {[
             { 
               title: "I'm Renting", 
-              desc: "Talk to us about finding a place", 
-              onClick: () => window.open("sms:+15551234567?body=Hi%2C%20I%27m%20interested%20in%20renting%20a%20place") 
+              desc: "Find your perfect home and manage your lease easily", 
+              onClick: () => {
+                if (isAuthenticated) {
+                  router.push("/properties");
+                } else {
+                  router.push("/api/auth/login");
+                }
+              }
             },
             { 
               title: "I'm Leasing", 
-              desc: "We'll help you find great tenants" ,
-              onClick: () => window.open("sms:+15551234567?body=Hi%2C%20I%27m%20interested%20in%finding%20a%20tennant") 
-
+              desc: "Manage properties, tenants, and payments all in one place",
+              onClick: () => {
+                if (isAuthenticated) {
+                  router.push("/u/dashboard");
+                } else {
+                  router.push("/api/auth/login");
+                }
+              }
             },
           ].map((item, i) => (
             <motion.div
@@ -41,12 +58,22 @@ const RentalPlatform = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.15 }}
               whileHover={{ scale: 1.03 }}
-
             >
               <MinimalCard title={item.title} onClick={item.onClick}>{item.desc}</MinimalCard>
             </motion.div>
           ))}
         </div>
+
+        {!isAuthenticated && (
+          <div className="flex gap-4 justify-center">
+            <Button asChild className="bg-white text-blue-600 hover:bg-white/90">
+              <RegisterLink>Get Started Free</RegisterLink>
+            </Button>
+            <Button asChild variant="outline" className="text-white border-white hover:bg-white/10">
+              <LoginLink>Sign In</LoginLink>
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -76,12 +103,16 @@ export default function Home() {
             transition={{ delay: 0.4 }}
             className="flex gap-2"
           >
-            <Button variant="ghost" className="text-white hover:bg-white/10">
-              Login
-            </Button>
-            <Button className="bg-white text-blue-600 hover:bg-white/90">
-              Get Started
-            </Button>
+            <LoginLink>
+              <Button variant="ghost" className="text-white hover:bg-white/10">
+                Login
+              </Button>
+            </LoginLink>
+            <RegisterLink>
+              <Button className="bg-white text-blue-600 hover:bg-white/90">
+                Get Started
+              </Button>
+            </RegisterLink>
           </motion.div>
         </div>
       </nav>
@@ -103,9 +134,24 @@ export default function Home() {
 
           <div className="mx-auto grid gap-1 divide-y divide-slate-200 rounded-2xl md:grid-cols-3 md:divide-x md:divide-y-0 md:bg-white/90 md:backdrop-blur-sm md:p-2">
             {[
-              { title: "Tenant Management", description: "Everything you need to manage tenants in one place." },
-              { title: "Maintenance", description: "Track and resolve maintenance issues easily." },
-              { title: "Payments", description: "Automated rent collection and reporting." },
+              { 
+                title: "Property Management", 
+                description: "List, manage, and track all your properties in one place.",
+                icon: Home,
+                color: "text-blue-500"
+              },
+              { 
+                title: "Maintenance Requests", 
+                description: "Track and resolve maintenance issues quickly and efficiently.",
+                icon: Wrench,
+                color: "text-orange-500"
+              },
+              { 
+                title: "Payment Tracking", 
+                description: "Automated rent collection, payment reminders, and financial reporting.",
+                icon: DollarSign,
+                color: "text-green-500"
+              },
             ].map((feature, index) => (
               <motion.div
                 key={feature.title}
@@ -113,17 +159,57 @@ export default function Home() {
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="rounded-2xl bg-white p-4 md:rounded-none"
+                className="rounded-2xl bg-white p-6 md:rounded-none hover:shadow-lg transition-shadow"
               >
-                <div className="flex items-center">
-                  <h3 className="mb-3 text-xl font-semibold text-gray-900">
-                    {feature.title}
-                  </h3>
-                  <div className="ml-auto rounded-full bg-slate-300/50 p-2">
+                <div className="flex items-start justify-between mb-3">
+                  <feature.icon className={`w-8 h-8 ${feature.color} mb-2`} />
+                  <div className="rounded-full bg-slate-300/50 p-2">
                     <MoveUpRight width={15} height={15} />
                   </div>
                 </div>
+                <h3 className="mb-2 text-xl font-semibold text-gray-900">
+                  {feature.title}
+                </h3>
                 <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+          
+          {/* Additional Features */}
+          <div className="mt-12 grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {[
+              { 
+                title: "Tenant Applications", 
+                description: "Streamlined application process with background checks.",
+                icon: Users,
+                color: "text-purple-500"
+              },
+              { 
+                title: "Secure Messaging", 
+                description: "Direct communication between landlords and tenants.",
+                icon: MessageSquare,
+                color: "text-indigo-500"
+              },
+              { 
+                title: "Document Storage", 
+                description: "Store leases, receipts, and important documents securely.",
+                icon: Shield,
+                color: "text-teal-500"
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-white/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-lg transition-shadow"
+              >
+                <feature.icon className={`w-8 h-8 ${feature.color} mb-3`} />
+                <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 text-sm">{feature.description}</p>
               </motion.div>
             ))}
           </div>
