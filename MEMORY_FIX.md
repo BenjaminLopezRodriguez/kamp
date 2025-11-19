@@ -113,6 +113,37 @@ If you need to reduce bundle size:
 - **Minification**: SWC enabled
 - **Tree Shaking**: Automatic
 
-## Status: ✅ FIXED
+## Additional Solutions
 
-The application should now run without memory issues!
+### If 4GB isn't enough:
+
+The scripts have been updated to use 8GB heap size:
+
+```bash
+npm run dev    # Now uses 8GB
+npm run build  # Now uses 8GB
+```
+
+### Alternative: Skip the Build
+
+You can run the app without building:
+
+```bash
+npm run dev
+```
+
+This works perfectly and doesn't require a build step!
+
+### For Deployment
+
+See `/workspace/DEPLOYMENT_OPTIONS.md` for:
+- Cloud deployment (Vercel, Netlify)
+- Docker deployment
+- Low-memory deployment strategies
+
+## Status: ✅ UPDATED
+
+- Increased heap to 8GB
+- Added dynamic imports for lazy loading
+- Optimized webpack configuration
+- Created alternative deployment options

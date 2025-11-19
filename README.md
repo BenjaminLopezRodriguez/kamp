@@ -2,6 +2,8 @@
 
 A modern, fun, and feature-rich property management platform built with the [T3 Stack](https://create.t3.gg/).
 
+> **👉 NEW TO THE REDESIGN?** Start here: **[START_HERE.md](./START_HERE.md)**
+
 ## ✨ What's New
 
 This app has been completely redesigned with a modern aesthetic inspired by Linktree, Partiful, and Shopify!
@@ -67,12 +69,13 @@ npm install
 # Set up your database
 npm run db:push
 
-# (Optional) Seed email templates
-npm run db:seed
-
-# Start development server
+# Start development server (no build needed!)
 npm run dev
 ```
+
+Visit: **http://localhost:3000**
+
+> **Memory Issues?** See [DEPLOYMENT_OPTIONS.md](./DEPLOYMENT_OPTIONS.md) for solutions.
 
 ## 🎯 Usage
 

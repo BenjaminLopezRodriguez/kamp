@@ -41,6 +41,32 @@ Visit: **http://localhost:3000**
 
 ---
 
+## ⚠️ Low Memory System?
+
+If you see "JavaScript heap out of memory" errors:
+
+### Option A: Use Dev Mode (Recommended)
+```bash
+npm run dev
+```
+✅ No build required, works on any system!
+
+### Option B: Deploy to Cloud
+```bash
+# Install Vercel
+npm i -g vercel
+
+# Deploy (free, handles memory for you)
+vercel
+```
+
+### Option C: See Full Options
+Check `/workspace/DEPLOYMENT_OPTIONS.md` for more solutions.
+
+**The app works great in dev mode - building is optional!**
+
+---
+
 ## 📱 What to Check Out
 
 ### Homepage (`/`)

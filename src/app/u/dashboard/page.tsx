@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,12 +20,13 @@ import {
   MapPin,
   Clock,
   CheckCircle2,
-  XCircle,
   Send
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { MobileNav } from "@/components/custom/MobileNav";
+
+// Lazy load mobile nav to reduce initial bundle
+const MobileNav = dynamic(() => import("@/components/custom/MobileNav"), { ssr: false });
 
 const features = [
   {

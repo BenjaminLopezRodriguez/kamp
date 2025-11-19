@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { 
@@ -12,9 +13,11 @@ import {
   Building2,
   Users
 } from "lucide-react";
-import HelpBox from "./_components/HelpBox";
-import { MobileNav } from "@/components/custom/MobileNav";
 import Link from "next/link";
+
+// Lazy load heavy components
+const HelpBox = dynamic(() => import("./_components/HelpBox"), { ssr: false });
+const MobileNav = dynamic(() => import("@/components/custom/MobileNav"), { ssr: false });
 
 const features = [
   {
