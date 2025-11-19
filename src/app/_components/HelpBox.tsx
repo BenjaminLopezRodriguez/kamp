@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -31,17 +31,23 @@ export default function HelpBox() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="fixed right-6 bottom-6 z-50 flex w-[300px] items-center rounded-full border border-slate-300 bg-white p-2 shadow-lg"
+        className="fixed right-6 bottom-6 z-50 flex w-[320px] items-center rounded-full border-2 border-purple-200 bg-white p-2 shadow-xl hover:shadow-2xl transition-shadow"
       >
+        <Sparkles className="ml-3 h-5 w-5 text-purple-500" />
         <Input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Get in touch, ask, get help…"
+          placeholder="Need help? Ask us anything..."
           className="flex-1 border-none shadow-none ring-0 outline-none focus:ring-0 focus:outline-none focus-visible:ring-transparent"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleSend();
+            }
+          }}
         />
         <Button
           onClick={handleSend}
-          className="rounded-full bg-blue-500 hover:bg-blue-600"
+          className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
           size="icon"
         >
           <ArrowRight className="text-white" />
