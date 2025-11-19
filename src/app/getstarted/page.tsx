@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -25,7 +25,7 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 type UserType = "tenant" | "landlord" | null;
 
-export default function GetStarted() {
+function GetStartedContent() {
   const searchParams = useSearchParams();
   const { isAuthenticated } = useKindeBrowserClient();
   const [userType, setUserType] = useState<UserType>(null);
@@ -338,5 +338,36 @@ export default function GetStarted() {
         )}
       </main>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-600 to-slate-100">
+      <header className="border-b border-white/10 bg-blue-600/40 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between p-4">
+          <Link href="/" className="flex items-center gap-1 text-white">
+            <h1 className="text-2xl font-bold">kamp</h1>
+            <span className="hidden text-xs text-white/80 sm:block">
+              property
+            </span>
+          </Link>
+        </div>
+      </header>
+      <main className="mx-auto flex max-w-4xl items-center justify-center px-4 py-12">
+        <div className="text-center">
+          <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-white border-t-transparent mx-auto"></div>
+          <p className="text-white">Loading...</p>
+        </div>
+      </main>
+    </div>
+  );
+}
+
+export default function GetStarted() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <GetStartedContent />
+    </Suspense>
   );
 }
