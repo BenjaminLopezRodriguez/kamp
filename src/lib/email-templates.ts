@@ -17,7 +17,9 @@ export interface EmailTemplate {
   variables: string[];
 }
 
-export const emailTemplates: Record<EmailTemplateType, EmailTemplate> = {
+// Function-based approach to prevent build-time evaluation
+function createEmailTemplates(): Record<EmailTemplateType, EmailTemplate> {
+  return {
   room_tour: {
     id: "room_tour",
     name: "Room Tour",
@@ -152,16 +154,12 @@ Request Details:
 📅 Reported: {{report_date}}
 ⚡ Priority: {{priority_level}}
 
-{{#if scheduled_date}}
 Scheduled Service:
 📅 Date: {{scheduled_date}}
 🕐 Time: {{scheduled_time}}
 👷 Technician: {{technician_name}}
-{{/if}}
 
-{{#if estimated_cost}}
 Estimated Cost: ${{estimated_cost}}
-{{/if}}
 
 We will keep you updated on the progress. If you have any questions, please contact us using request ID {{request_id}}.
 
@@ -392,14 +390,42 @@ Best regards,
       "contact_phone",
     ],
   },
-};
+  };
+}
+
+// Lazy getter - only creates templates when first accessed
+let _cachedTemplates: Record<EmailTemplateType, EmailTemplate> | null = null;
+
+function getTemplates(): Record<EmailTemplateType, EmailTemplate> {
+  if (!_cachedTemplates) {
+    _cachedTemplates = createEmailTemplates();
+  }
+  return _cachedTemplates;
+}
+
+// Export getter function
+export function getEmailTemplates(): Record<EmailTemplateType, EmailTemplate> {
+  return getTemplates();
+}
+
+// Export object that uses getter - safe for build time
+export const emailTemplates = {
+  get room_tour() { return getTemplates().room_tour; },
+  get guest_keys() { return getTemplates().guest_keys; },
+  get inspections() { return getTemplates().inspections; },
+  get maintenance_request() { return getTemplates().maintenance_request; },
+  get rent_reminder() { return getTemplates().rent_reminder; },
+  get welcome_tenant() { return getTemplates().welcome_tenant; },
+  get lease_renewal() { return getTemplates().lease_renewal; },
+  get move_out_notice() { return getTemplates().move_out_notice; },
+} as Record<EmailTemplateType, EmailTemplate>;
 
 export function getTemplate(type: EmailTemplateType): EmailTemplate {
-  return emailTemplates[type];
+  return getTemplates()[type];
 }
 
 export function getAllTemplates(): EmailTemplate[] {
-  return Object.values(emailTemplates);
+  return Object.values(getTemplates());
 }
 
 export function replaceVariables(
