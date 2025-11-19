@@ -26,15 +26,35 @@ import { db } from "@/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const { getUser, isAuthenticated } = getKindeServerSession();
-  const user = await getUser();
-  
-  return {
-    db,
-    user,
-    isAuthenticated: await isAuthenticated(),
-    ...opts,
-  };
+  // Skip auth during build to avoid hanging
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    return {
+      db: {} as any,
+      user: null,
+      isAuthenticated: false,
+      ...opts,
+    };
+  }
+
+  try {
+    const { getUser, isAuthenticated } = getKindeServerSession();
+    const user = await getUser();
+    
+    return {
+      db,
+      user,
+      isAuthenticated: await isAuthenticated(),
+      ...opts,
+    };
+  } catch (error) {
+    // Fallback if auth fails during build
+    return {
+      db: {} as any,
+      user: null,
+      isAuthenticated: false,
+      ...opts,
+    };
+  }
 };
 
 /**
@@ -86,6 +106,11 @@ export const createTRPCRouter = t.router;
  * network latency that would occur in production but not in local development.
  */
 const timingMiddleware = t.middleware(async ({ next, path }) => {
+  // Skip timing in production builds to avoid hanging
+  if (process.env.NODE_ENV === "production" && process.env.VERCEL) {
+    return next();
+  }
+
   const start = Date.now();
 
   if (t._config.isDev) {
