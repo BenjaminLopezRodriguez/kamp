@@ -2,7 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
-import { boolean, decimal, index, integer, pgTableCreator, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, index, integer, numeric, pgTableCreator, text, timestamp, varchar } from "drizzle-orm/pg-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -47,9 +47,9 @@ export const properties = createTable(
     zipCode: d.varchar({ length: 20 }).notNull(),
     propertyType: d.varchar({ length: 50 }).notNull(), // 'apartment', 'house', 'condo', etc.
     bedrooms: d.integer(),
-    bathrooms: d.decimal({ precision: 3, scale: 1 }),
+    bathrooms: d.numeric({ precision: 3, scale: 1 }),
     squareFeet: d.integer(),
-    monthlyRent: d.decimal({ precision: 10, scale: 2 }).notNull(),
+    monthlyRent: d.numeric({ precision: 10, scale: 2 }).notNull(),
     description: d.text(),
     images: d.text().array(), // Array of image URLs
     amenities: d.text().array(), // Array of amenity strings
@@ -77,8 +77,8 @@ export const leases = createTable(
     landlordId: d.varchar({ length: 255 }).notNull(), // References users.id
     startDate: d.timestamp({ withTimezone: true }).notNull(),
     endDate: d.timestamp({ withTimezone: true }).notNull(),
-    monthlyRent: d.decimal({ precision: 10, scale: 2 }).notNull(),
-    securityDeposit: d.decimal({ precision: 10, scale: 2 }),
+    monthlyRent: d.numeric({ precision: 10, scale: 2 }).notNull(),
+    securityDeposit: d.numeric({ precision: 10, scale: 2 }),
     status: d.varchar({ length: 50 }).notNull().default("active"), // 'active', 'expired', 'terminated'
     leaseDocumentUrl: d.text(),
     createdAt: d
@@ -132,7 +132,7 @@ export const payments = createTable(
     leaseId: d.integer().notNull(), // References leases.id
     tenantId: d.varchar({ length: 255 }).notNull(), // References users.id
     landlordId: d.varchar({ length: 255 }).notNull(), // References users.id
-    amount: d.decimal({ precision: 10, scale: 2 }).notNull(),
+    amount: d.numeric({ precision: 10, scale: 2 }).notNull(),
     type: d.varchar({ length: 50 }).notNull(), // 'rent', 'deposit', 'fee', 'refund'
     dueDate: d.timestamp({ withTimezone: true }).notNull(),
     paidDate: d.timestamp({ withTimezone: true }),
@@ -215,7 +215,7 @@ export const applications = createTable(
     landlordId: d.varchar({ length: 255 }).notNull(), // References users.id
     status: d.varchar({ length: 50 }).notNull().default("pending"), // 'pending', 'approved', 'rejected', 'withdrawn'
     message: d.text(),
-    income: d.decimal({ precision: 10, scale: 2 }),
+    income: d.numeric({ precision: 10, scale: 2 }),
     employmentStatus: d.varchar({ length: 100 }),
     references: d.text().array(), // Array of reference contact info
     createdAt: d
