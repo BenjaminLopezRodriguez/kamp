@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import { LogoutLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { Badge } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface Plan {
   key: string;

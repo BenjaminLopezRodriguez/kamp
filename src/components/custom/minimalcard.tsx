@@ -24,7 +24,7 @@ const MinimalCard = ({
       whileInView={{ y: 0, opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="${className} overflow-hidden rounded-2xl bg-white p-4 md:rounded-none"
+      className={`${className} overflow-hidden rounded-2xl bg-white p-4 md:rounded-none`}
       onClick={onClick}
     >
       <div className="flex flex-row">
