@@ -6,9 +6,10 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 import { db } from "@/server/db";
 
@@ -25,10 +26,35 @@ import { db } from "@/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  return {
-    db,
-    ...opts,
-  };
+  // Skip auth during build to avoid hanging
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    return {
+      db: {} as any,
+      user: null,
+      isAuthenticated: false,
+      ...opts,
+    };
+  }
+
+  try {
+    const { getUser, isAuthenticated } = getKindeServerSession();
+    const user = await getUser();
+    
+    return {
+      db,
+      user,
+      isAuthenticated: await isAuthenticated(),
+      ...opts,
+    };
+  } catch (error) {
+    // Fallback if auth fails during build
+    return {
+      db: {} as any,
+      user: null,
+      isAuthenticated: false,
+      ...opts,
+    };
+  }
 };
 
 /**
@@ -80,6 +106,11 @@ export const createTRPCRouter = t.router;
  * network latency that would occur in production but not in local development.
  */
 const timingMiddleware = t.middleware(async ({ next, path }) => {
+  // Skip timing in production builds to avoid hanging
+  if (process.env.NODE_ENV === "production" && process.env.VERCEL) {
+    return next();
+  }
+
   const start = Date.now();
 
   if (t._config.isDev) {
@@ -104,3 +135,25 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
+
+/**
+ * Protected (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.user` is not null.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const protectedProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(async ({ ctx, next }) => {
+    if (!ctx.isAuthenticated || !ctx.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    return next({
+      ctx: {
+        ...ctx,
+        user: ctx.user, // user is now guaranteed to be non-null
+      },
+    });
+  });

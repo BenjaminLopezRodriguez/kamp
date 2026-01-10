@@ -31,4 +31,8 @@ const handler = (req: NextRequest) =>
         : undefined,
   });
 
+// Force dynamic rendering for API routes
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export { handler as GET, handler as POST };
